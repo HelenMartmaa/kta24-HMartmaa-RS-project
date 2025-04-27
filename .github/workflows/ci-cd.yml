@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'  # Võid määrata oma projekti Node.js versiooni
+
+    - name: Install dependencies (frontend)
+      working-directory: ./frontend-react
+      run: |
+        npm install
+
+    - name: Install dependencies (backend)
+      working-directory: ./backend
+      run: |
+        npm install
+
+    - name: Run tests (optional)
+      run: |
+        # Siin saab jooksutada teste, kui neid on
+        echo "Tests could go here"
+
+    - name: Build frontend
+      working-directory: ./frontend-react
+      run: |
+        npm run build
+
+    - name: Build backend
+      working-directory: ./backend
+      run: |
+        npm run build
+
+    - name: Deploy
+      run: |
+        # Siin saad lisada oma deploy'i käsud (nt. DigitalOcean, Azure, jne)
+        echo "Deploy step goes here"

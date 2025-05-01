@@ -1,12 +1,21 @@
 const express = require('express');
+const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
+const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 const port = 3001;
 
+// CORS, peab olema kindlasti enne express.json-i!
+app.use(cors());
+
+// Middlewares
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 // Middleware
 app.use(express.json());
 
-// SQLite ühendus
+// SQLite ühendus, taskide andmebaas nimega todos
 const db = new sqlite3.Database('./todos.db', (err) => {
   if (err) {
     console.error('Error opening database:', err);
@@ -15,7 +24,7 @@ const db = new sqlite3.Database('./todos.db', (err) => {
   }
 });
 
-// Üks lihtne API lõpp-punkt
+// Üks lihtne API lõpp-punkt, kuvatakse localhost:3001 lehel
 app.get('/', (req, res) => {
   res.send('To-do App Backend');
 });
@@ -29,7 +38,7 @@ db.serialize(() => {
   )`);
 });
 
-app.post('/todos', (req, res) => {
+app.post('/tasks', (req, res) => {
     // Oletame, et keha sisaldab ülesande kirjelduse
     const { task } = req.body; // Saame 'task' väärtuse päringu kehast
     const sql = `INSERT INTO todos (task) VALUES (?)`; // SQL päring, et sisestada ülesanne
@@ -43,7 +52,7 @@ app.post('/todos', (req, res) => {
     });
   });
   // GET: kõik ülesanded
-  app.get('/todos', (req, res) => {
+  app.get('/tasks', (req, res) => {
     db.all('SELECT * FROM todos', [], (err, rows) => {
       if (err) {
         // Kui SQL päringuga tekib viga, siis tagastame vea sõnumi
@@ -55,7 +64,7 @@ app.post('/todos', (req, res) => {
   });
 
   //PUT: Uuenda ülesande staatust
-  app.put('/todos/:id', (req, res) => {
+  app.put('/tasks/:id', (req, res) => {
     const { id } = req.params;  // Kõigepealt saame ülesande ID URL-ist (nt /todos/1)
     const { completed } = req.body;  // Seejärel saame päringu kehast ülesande lõpetatuse staatuse
     const sql = `UPDATE todos SET completed = ? WHERE id = ?`;  // SQL päring ülesande muutmiseks
@@ -70,7 +79,7 @@ app.post('/todos', (req, res) => {
   });
 
   // DELETE: Kustuta ülesanne
-  app.delete('/todos/:id', (req, res) => {
+  app.delete('/tasks/:id', (req, res) => {
     const { id } = req.params;  // Kõigepealt saame ülesande ID URL-ist (nt /todos/1)
     const sql = `DELETE FROM todos WHERE id = ?`;  // SQL päring ülesande kustutamiseks
     db.run(sql, [id], function (err) {

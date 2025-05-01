@@ -1,11 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client'; // ← õige moodul
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Kasuta createRoot asemel ReactDOM.render
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container);
+
 root.render(
   <React.StrictMode>
     <App />

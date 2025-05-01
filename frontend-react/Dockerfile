@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Käivitame Reacti arenduskeskkonna
-EXPOSE 3002
+EXPOSE 3000
 
 # Käivitame rakenduse
 CMD ["npm", "start"]

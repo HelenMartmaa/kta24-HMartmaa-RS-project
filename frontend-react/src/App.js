@@ -23,7 +23,7 @@ function App() {
   const addTask = async () => {
     if (newTask.trim() === '') return;
     try {
-      await axios.post('http://localhost:3001/tasks', { name: newTask });
+      await axios.post('http://localhost:3001/tasks', { task: newTask });
       setNewTask('');
       fetchTasks();
     } catch (error) {
@@ -58,7 +58,7 @@ function App() {
 
   const toggleCompleted = async (task) => {
     try {
-      await axios.patch(`http://localhost:3001/tasks/${task.id}`, { completed: !task.completed });
+      await axios.put(`http://localhost:3001/tasks/${task.id}`, { completed: !task.completed });
       fetchTasks();
     } catch (error) {
       console.error('Error toggling task:', error);
@@ -67,11 +67,11 @@ function App() {
 
   return (
     <div style={styles.container}>
-      <h1>Tegevuste nimekiri</h1>
+      <h1>To-do listi koostamine</h1>
       <div style={styles.inputGroup}>
         <input
           type="text"
-          value={newTask}
+          value={newTask || ''}
           onChange={(e) => setNewTask(e.target.value)}
           placeholder="Lisa uus tegevus"
           style={styles.input}
@@ -82,7 +82,7 @@ function App() {
       </div>
       <ul style={styles.list}>
         {tasks.length === 0 ? (
-          <li>Ülesandeid ei leitud</li>
+          <li>Tegevusi pole veel lisatud!</li>
         ) : (
           tasks.map((task) => (
             <li
@@ -105,12 +105,12 @@ function App() {
                 {editingTaskId === task.id ? (
                   <input
                     type="text"
-                    value={editingTaskName}
+                    value={editingTaskName || ''}
                     onChange={(e) => setEditingTaskName(e.target.value)}
                     style={styles.input}
                   />
                 ) : (
-                  <span>{task.name}</span>
+                  <span>{task.task}</span>
                 )}
               </div>
               <div style={styles.buttonGroup}>
@@ -148,9 +148,9 @@ const styles = {
     maxWidth: '600px',
     margin: '50px auto',
     padding: '20px',
-    backgroundColor: '#fff9c4',  // Hele kollane taust
+    backgroundColor: '#a3e4d7',  // Hele kollane taust
     borderRadius: '10px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    boxShadow: '0 2px 8px rgba(31, 30, 30, 0.1)',
     fontFamily: 'Arial, sans-serif'
   },
   inputGroup: {

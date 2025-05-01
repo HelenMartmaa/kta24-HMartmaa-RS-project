@@ -19,7 +19,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18'  # Võid määrata oma projekti Node.js versiooni
+        node-version: '18'
 
     - name: Install dependencies (frontend)
       working-directory: ./frontend-react
@@ -48,5 +48,5 @@ jobs:
 
     - name: Deploy
       run: |
-        # Siin saad lisada oma deploy'i käsud (nt. DigitalOcean, Azure, jne)
+        # Siin saab lisada oma deploy'i käsud (nt. DigitalOcean, Azure, jne)
         echo "Deploy step goes here"

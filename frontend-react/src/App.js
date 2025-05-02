@@ -13,7 +13,7 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/tasks');
+      const response = await axios.get('api/tasks');
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -23,7 +23,7 @@ function App() {
   const addTask = async () => {
     if (newTask.trim() === '') return;
     try {
-      await axios.post('http://localhost:3001/tasks', { task: newTask });
+      await axios.post('api/tasks', { task: newTask });
       setNewTask('');
       fetchTasks();
     } catch (error) {
@@ -33,7 +33,7 @@ function App() {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/tasks/${id}`);
+      await axios.delete(`api/tasks/${id}`);
       fetchTasks();
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -47,7 +47,7 @@ function App() {
 
   const saveEdit = async (id) => {
     try {
-      await axios.put(`http://localhost:3001/tasks/${id}`, { name: editingTaskName });
+      await axios.put(`api/tasks/${id}`, { name: editingTaskName });
       setEditingTaskId(null);
       setEditingTaskName('');
       fetchTasks();
@@ -58,7 +58,7 @@ function App() {
 
   const toggleCompleted = async (task) => {
     try {
-      await axios.put(`http://localhost:3001/tasks/${task.id}`, { completed: !task.completed });
+      await axios.put(`api/tasks/${task.id}`, { completed: !task.completed });
       fetchTasks();
     } catch (error) {
       console.error('Error toggling task:', error);
@@ -148,7 +148,7 @@ const styles = {
     maxWidth: '600px',
     margin: '50px auto',
     padding: '20px',
-    backgroundColor: '#a3e4d7',  // Hele kollane taust
+    backgroundColor: '#a3e4d7', 
     borderRadius: '10px',
     boxShadow: '0 2px 8px rgba(31, 30, 30, 0.1)',
     fontFamily: 'Arial, sans-serif'

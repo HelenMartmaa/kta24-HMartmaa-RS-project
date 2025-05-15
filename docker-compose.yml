@@ -5,8 +5,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
-    volumes:
-      - ./backend:/app
     command: npm start
 
   frontend:

@@ -67,11 +67,16 @@ app.post('/tasks', (req, res) => {
   app.put('/tasks/:id', (req, res) => {
     const { id } = req.params;  // Kõigepealt saame ülesande ID URL-ist (nt /todos/1)
     const { completed } = req.body;  // Seejärel saame päringu kehast ülesande lõpetatuse staatuse
+    
+    if (typeof completed !== 'boolean') {
+      return res.status(400).send('Invalid value for completed');
+    }
+    
     const sql = `UPDATE todos SET completed = ? WHERE id = ?`;  // SQL päring ülesande muutmiseks
-    db.run(sql, [completed, id], function (err) {
+    db.run(sql, [completed ? 1 : 0, id], function (err) {
       if (err) {
         // Kui on viga, siis saadame 500 statuskoodiga vea sõnumi
-        return res.status(500).send('Error updating task');
+        return res.status(500).send('Error updating task status');
       }
       // Kui kõik läks hästi, saadame uuendatud andmed
       res.send({ id, completed });

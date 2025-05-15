@@ -4,8 +4,6 @@ import axios from 'axios';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [editingTaskId, setEditingTaskId] = useState(null);
-  const [editingTaskName, setEditingTaskName] = useState('');
 
   useEffect(() => {
     fetchTasks();
@@ -13,7 +11,7 @@ function App() {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('api/tasks');
+      const response = await axios.get('http://localhost:3001/tasks');
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -23,7 +21,7 @@ function App() {
   const addTask = async () => {
     if (newTask.trim() === '') return;
     try {
-      await axios.post('api/tasks', { task: newTask });
+      await axios.post('http://localhost:3001/tasks', { task: newTask });
       setNewTask('');
       fetchTasks();
     } catch (error) {
@@ -33,32 +31,16 @@ function App() {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`api/tasks/${id}`);
+      await axios.delete(`http://localhost:3001/tasks/${id}`);
       fetchTasks();
     } catch (error) {
       console.error('Error deleting task:', error);
     }
   };
 
-  const startEditing = (task) => {
-    setEditingTaskId(task.id);
-    setEditingTaskName(task.name);
-  };
-
-  const saveEdit = async (id) => {
-    try {
-      await axios.put(`api/tasks/${id}`, { name: editingTaskName });
-      setEditingTaskId(null);
-      setEditingTaskName('');
-      fetchTasks();
-    } catch (error) {
-      console.error('Error editing task:', error);
-    }
-  };
-
   const toggleCompleted = async (task) => {
     try {
-      await axios.put(`api/tasks/${task.id}`, { completed: !task.completed });
+      await axios.put(`http://localhost:3001/tasks/${task.id}`, { completed: !task.completed });
       fetchTasks();
     } catch (error) {
       console.error('Error toggling task:', error);
@@ -102,39 +84,13 @@ function App() {
                   onChange={() => toggleCompleted(task)}
                   style={{ marginRight: '10px' }}
                 />
-                {editingTaskId === task.id ? (
-                  <input
-                    type="text"
-                    value={editingTaskName || ''}
-                    onChange={(e) => setEditingTaskName(e.target.value)}
-                    style={styles.input}
-                  />
-                ) : (
                   <span>{task.task}</span>
-                )}
               </div>
-              <div style={styles.buttonGroup}>
-                {editingTaskId === task.id ? (
-                  <button onClick={() => saveEdit(task.id)} style={styles.button}>
-                    Salvesta
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => startEditing(task)}
-                      style={{ ...styles.button, ...styles.editButton }}
-                    >
-                      Muuda
-                    </button>
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      style={{ ...styles.button, ...styles.deleteButton }}
-                    >
-                      Kustuta
-                    </button>
-                  </>
-                )}
-              </div>
+              <button
+                onClick={() => deleteTask(task.id)}
+                style={{ ...styles.button, ...styles.deleteButton }}
+              >Kustuta
+              </button>
             </li>
           ))
         )}
@@ -186,19 +142,11 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center'
   },
-  buttonGroup: {
-    display: 'flex',
-    gap: '10px'
-  },
   button: {
     padding: '5px 10px',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer'
-  },
-  editButton: {
-    backgroundColor: '#ff66b2',  // Roosa värv muudatuse nupule
-    color: 'white'
   },
   deleteButton: {
     backgroundColor: '#dc3545',

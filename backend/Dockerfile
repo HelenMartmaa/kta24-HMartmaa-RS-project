@@ -6,7 +6,13 @@ WORKDIR /app
 
 # Kopeerime package.json ja installime sõltuvused
 COPY package*.json ./
-RUN npm install
+
+# Tööriistad ja sõltuvused
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    && npm install
 
 # Kopeerime kõik failid
 COPY . .
@@ -16,8 +22,3 @@ EXPOSE 3001
 
 # Käivitame back-endi serveri
 CMD ["npm", "start"]
-
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  python3 \
-  && npm install

@@ -1,19 +1,13 @@
-# Kasutame ametlikku Node.js pilti
-FROM node:18
-
-# Määrame töökausta konteineris
+# Build stage
+FROM node:18 AS build
 WORKDIR /app
-
-# Kopeerime package.json ja installime sõltuvused
 COPY package*.json ./
 RUN npm install
-
-# Kopeerime ülejäänud koodi konteinerisse
 COPY . .
+RUN npm run build
 
-# Käivitame Reacti arenduskeskkonna
-EXPOSE 3000
-
-# Käivitame rakenduse
-CMD ["npm", "start"]
-
+# Production stage
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

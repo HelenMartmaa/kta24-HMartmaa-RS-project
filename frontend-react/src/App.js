@@ -79,7 +79,7 @@ function App() {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input
-                  type="checkbox" //tegevuse tehtuks märkimine
+                  type="checkbox"
                   checked={task.completed}
                   onChange={() => toggleCompleted(task)}
                   style={{ marginRight: '10px' }}
